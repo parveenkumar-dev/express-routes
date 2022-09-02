@@ -1,0 +1,60 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: o2i-reprocess-messages
+  description: API for o2i-reprocess-messages
+schemes:
+  - http
+host: localhost:8080
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /reprocess/messages:
+    post:
+      summary: To reprocess data to kafka topic based on supplied offset
+      operationId: o2i-reprocess-messages
+      security:
+        - api_key: []
+      parameters:
+        - in: body
+          name: reprocess
+          description: Reprocess Message payload structure
+          schema:
+            $ref: '#/definitions/request'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/response'
+        '400':
+          description: Invalid requests
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server Error
+  
+definitions:
+  request:
+    properties:
+      topicName:
+        type: string
+      offsetFrom:
+        type: integer
+      offsetTo:
+        type: integer
+      partition:
+        type: integer
+    required:
+      - topicName
+      - offsetFrom
+      - offsetTo
+  response:
+    type: string
+    example: Messages are in queue to re-process to ${topicName} topic
